@@ -1,18 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { auth, db } from "@/lib/firebase";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function AiPage() {
+  const [user, setUser] = useState<any>(null);
   const [input, setInput] = useState("");
-  const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  const [chats, setChats] = useState<{ role: string; text: string }[]>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // ✅ Pantau perubahan user login
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsub();
+  }, []);
+
+  // ✅ Ambil chat lama dari Firestore
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const fetchChats = async () => {
+      const docRef = doc(db, "aiChat", user.uid);
+      const snapshot = await getDoc(docRef);
+
+      if (snapshot.exists()) {
+        setChats(snapshot.data().chat || []);
+      } else {
+        await setDoc(docRef, { chat: [] });
+      }
+    };
+
+    fetchChats();
+  }, [user?.uid]);
+
+  // ✅ Auto scroll ke bawah tiap ada pesan baru
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chats, loading]);
+
+  // ✅ Kirim pesan dan simpan ke Firestore
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || !user?.uid) return;
 
+    const userMsg = { role: "user", text: input };
+    setChats((prev) => [...prev, userMsg]);
     setLoading(true);
-    setResponse("");
 
     try {
       const res = await fetch("/api/gemini", {
@@ -22,10 +66,22 @@ export default function AiPage() {
       });
 
       const data = await res.json();
-      setResponse(data.text);
+      const aiMsg = { role: "ai", text: data.text };
+
+      setChats((prev) => [...prev, aiMsg]);
+
+      const docRef = doc(db, "aiChat", user.uid);
+      await setDoc(
+        docRef,
+        { chat: arrayUnion(userMsg, aiMsg) },
+        { merge: true }
+      );
     } catch (err) {
       console.error(err);
-      setResponse("⚠️ Something went wrong.");
+      setChats((prev) => [
+        ...prev,
+        { role: "ai", text: "⚠️ Terjadi kesalahan." },
+      ]);
     } finally {
       setLoading(false);
       setInput("");
@@ -33,31 +89,66 @@ export default function AiPage() {
   }
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Elevana ✨ Gemini Chat</h1>
+    <div className="flex flex-col justify-between min-h-screen bg-white">
+    {/* Chat container */}
+    <div className="flex flex-col flex-1 w-full overflow-y-auto px-4 py-6 bg-gradient-to-b from-teal-100 to-white">
+      <div className="w-full max-w-2xl mx-auto flex flex-col space-y-4">
+        {chats.map((msg, i) => (
+          <div
+            key={i}
+            className={`flex ${
+              msg.role === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
+            <div
+              className={`px-4 py-3 rounded-2xl shadow-md text-sm md:text-base max-w-[75%] transition-all duration-300 ${
+                msg.role === "user"
+                  ? "bg-teal-500 text-white rounded-br-none"
+                  : "bg-white text-gray-800 border border-gray-100 rounded-bl-none"
+              }`}
+            >
+              {msg.text}
+            </div>
+          </div>
+        ))}
+  
+        {loading && (
+          <div className="flex justify-start">
+            <div className="bg-white border border-gray-100 text-gray-500 px-4 py-3 rounded-2xl max-w-[70%] shadow-sm animate-pulse">
+              Mengetik...
+            </div>
+          </div>
+        )}
+  
+        {/* Ref untuk auto scroll */}
+        <div ref={messagesEndRef} />
+      </div>
+    </div>
+  
 
-      <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask Gemini something..."
-          className="flex-1 px-4 py-2 border rounded-lg"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 bg-teal-600 text-white rounded-lg"
-        >
-          {loading ? "Thinking..." : "Send"}
-        </button>
+      {/* Input area */}
+      <form
+        onSubmit={handleSubmit}
+        className="w-full flex justify-center items-center p-3 bg-white sticky bottom-0"
+      >
+        <div className="flex items-center gap-2 w-full max-w-md">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask Elevana Ai..."
+            className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-teal-600 text-white text-sm px-4 py-1.5 rounded-md hover:bg-teal-700 disabled:opacity-50"
+          >
+            Send
+          </button>
+        </div>
       </form>
 
-      {response && (
-        <div className="p-4 bg-gray-100 rounded-lg">
-          <p className="whitespace-pre-wrap">{response}</p>
-        </div>
-      )}
     </div>
   );
 }
