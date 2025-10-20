@@ -89,10 +89,19 @@ export default function AiPage() {
   }
 
   return (
-    <div className="flex flex-col justify-between min-h-screen bg-white">
+    <div className="flex flex-col justify-between min-h-screen bg-gradient-to-b from-teal-100 to-white">
     {/* Chat container */}
-    <div className="flex flex-col flex-1 w-full overflow-y-auto px-4 py-6 bg-gradient-to-b from-teal-100 to-white">
-      <div className="w-full max-w-2xl mx-auto flex flex-col space-y-4">
+    <div className="w-full max-w-2xl mx-auto flex flex-col space-y-4 flex-1">
+    {/* Jika belum ada chat, tampilkan hero text */}
+    {chats.length === 0 && !loading ? (
+      <div className="flex flex-col items-center justify-center text-center flex-1 text-gray-700">
+        <h1 className="text-2xl md:text-3xl font-semibold text-teal-600">
+          Hello I’m <span className="text-teal-500 font-bold">Elevana Ai</span>
+        </h1>
+        <p className="text-gray-500 mt-2">Ask me Anything</p>
+      </div>
+    ) : (
+      <>
         {chats.map((msg, i) => (
           <div
             key={i}
@@ -111,7 +120,7 @@ export default function AiPage() {
             </div>
           </div>
         ))}
-  
+
         {loading && (
           <div className="flex justify-start">
             <div className="bg-white border border-gray-100 text-gray-500 px-4 py-3 rounded-2xl max-w-[70%] shadow-sm animate-pulse">
@@ -119,11 +128,12 @@ export default function AiPage() {
             </div>
           </div>
         )}
-  
+
         {/* Ref untuk auto scroll */}
         <div ref={messagesEndRef} />
-      </div>
-    </div>
+      </>
+    )}
+  </div>
   
 
       {/* Input area */}
