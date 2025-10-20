@@ -91,7 +91,7 @@ export default function AiPage() {
   return (
     <div className="flex flex-col justify-between min-h-screen bg-gradient-to-b from-teal-100 to-white">
     {/* Chat container */}
-    <div className="w-full max-w-2xl mx-auto flex flex-col space-y-4 flex-1">
+    <div className="w-full max-w-2xl mx-auto flex flex-col space-y-4 flex-1 py-10">
     {/* Jika belum ada chat, tampilkan hero text */}
     {chats.length === 0 && !loading ? (
       <div className="flex flex-col items-center justify-center text-center flex-1 text-gray-700">
