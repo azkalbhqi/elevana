@@ -1,5 +1,6 @@
 'use client'
 import { motion } from "framer-motion";
+import PricingSection from "./utils/PricingSection";
 
 export default function Home() {
 
@@ -61,8 +62,12 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="bg-gradient-to-b from-teal-100 to-white"> 
+          <PricingSection />
+      </section>
+
       {/* Trust Section */}
-      <section className="bg-teal-50 py-16 px-6">
+      <section className="bg-gradient-to-b from-white to-teal-100 py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <blockquote className="italic text-gray-700 text-lg mb-6">
             “ELEVANA helped me find peace in my day.”
@@ -76,7 +81,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="bg-gray-900 text-gray-300 py-12 mt-auto">
+      <footer id="contact" className="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-300 py-12 mt-auto">
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-white font-bold text-xl mb-2">ELEVANA</h3>
