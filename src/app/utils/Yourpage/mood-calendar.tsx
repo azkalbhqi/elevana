@@ -8,7 +8,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 // tipe mood
 type Mood = {
   id: string;
-  mood: "mad" | "sad" | "normal" | "happy" | "superhappy";
+  mood: "mad" | "sad" | "normal" | "happy" | "super_happy";
   description: string;
   createdAt: Date;
 };
@@ -18,7 +18,7 @@ const moodIcons: Record<Mood["mood"], string> = {
   sad: "😢",
   normal: "😐",
   happy: "😊",
-  superhappy: "🤩",
+  super_happy: "🤩",
 };
 
 export default function MoodCalendar() {
