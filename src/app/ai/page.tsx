@@ -98,7 +98,7 @@ export default function AiPage() {
         <h1 className="text-2xl md:text-3xl font-semibold text-teal-600">
           Hello I’m <span className="text-teal-500 font-bold">Elevana Ai</span>
         </h1>
-        <p className="text-gray-500 mt-2">Ask me Anything</p>
+        <p className="text-gray-500 mt-2">Ask me About Mental Health</p>
       </div>
     ) : (
       <>
