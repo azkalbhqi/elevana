@@ -1,60 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import DoctorCard from "../utils/doctor-card";
+import { useDoctors } from "@/app/hooks/useDoctors";
 
-interface Doctor {
-  id: string;
-  name: string;
-  experience: string;
-  rating: number;
-  reviews: number;
-  isOnline: boolean;
-  imageUrl: string;
-  createdAt: string;
-}
 
 export default function DoctorsPage() {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<"rating" | "online" | "none">("none");
+  const {
+    filteredDoctors,
+    loading,
+    search, 
+    setSearch,
+    sortBy,
+    setSortBy,
+  } = useDoctors();
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "doctors"));
-        const doctorList: Doctor[] = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Doctor[];
-        setTimeout(() => {
-         
-          setDoctors(doctorList);
-          setLoading(false);
-        }, 600);
-      } catch (err) {
-        console.error("Error fetching doctors:", err);
-        setLoading(false);
-      }
-    };
+  const {
+    filteredDoctors,
+    loading,
+    search, 
+    setSearch,
+    sortBy,
+    setSortBy,
+  } = useDoctors();
 
-    fetchDoctors();
-  }, []);
-
-  const filteredDoctors = doctors
-    .filter((doc) => doc.name.toLowerCase().includes(search.toLowerCase()))
-    .sort((a, b) => {
-      if (sortBy === "rating") return b.rating - a.rating;
-      if (sortBy === "online")
-        return (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0);
-      return 0;
-    });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white px-6 py-12 mt-10">
@@ -67,7 +38,7 @@ export default function DoctorsPage() {
         Meet Our Doctors
       </motion.h1>
 
-      {/* Search & Sort Controls */}
+      {/* 🔍 Search & Sort Controls */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 max-w-6xl mx-auto mb-8">
         <input
           type="text"
@@ -90,7 +61,7 @@ export default function DoctorsPage() {
         </select>
       </div>
 
-      {/* Floating Chat Button */}
+      {/* 💬 Floating Chat Button */}
       <Link
         href="/ai"
         className="fixed bottom-10 right-10 bg-teal-600 hover:bg-teal-700 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105"
@@ -99,7 +70,7 @@ export default function DoctorsPage() {
         <span className="font-medium">Consult with AI</span>
       </Link>
 
-      {/* Loading Skeletons */}
+      {/* 🩺 Doctor List / Loading */}
       {loading ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
           {Array(6)

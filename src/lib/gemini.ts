@@ -38,7 +38,6 @@ export async function analyzeWithGemini(prompt: string) {
     contents: [{ role: "user", parts: [{ text: prompt }] }],
   });
 
-  // Pastikan ambil string, bukan object
   return typeof result.text === 'string' ? result.text : JSON.stringify(result.text); 
 }
 

@@ -4,6 +4,8 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Doctor {
   id: string;
@@ -19,6 +21,7 @@ interface Doctor {
 export default function DoctorDetailPage() {
   const params = useParams();
   const id = params?.id as string;
+  const router = useRouter();
 
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [loading, setLoading] = useState(true);
@@ -66,6 +69,13 @@ export default function DoctorDetailPage() {
 
   return (
     <div className="max-w-3xl mx-auto mt-auto p-6 bg-white rounded-2xl shadow-md">
+       <button
+          onClick={() => router.push('/consult')}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200 text-gray-700 cursor-pointer"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-medium"></span>
+    </button>
       <div className="flex flex-col md:flex-row items-center gap-6">
         <img
           src={doctor.imageUrl}

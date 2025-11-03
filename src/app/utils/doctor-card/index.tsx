@@ -65,7 +65,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
 
   <button
     onClick={onChatClick}
-    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition bg-[#5a4fcf] text-white hover:bg-[#4b3fc2]"
+    className="flex items-center gap-2 px-2 py-2 rounded-xl text-xs md:px-4 md:text-sm font-medium transition bg-teal-600 text-white hover:bg-teal-700"
   >
     {isOnline ? "💬 Chat Sekarang" : "💬 Booking Chat"}
     

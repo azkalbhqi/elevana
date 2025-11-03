@@ -10,6 +10,8 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AiPage() {
   const [user, setUser] = useState<any>(null);
@@ -17,6 +19,7 @@ export default function AiPage() {
   const [loading, setLoading] = useState(false);
   const [chats, setChats] = useState<{ role: string; text: string }[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // ✅ Pantau perubahan user login
   useEffect(() => {
@@ -90,6 +93,13 @@ export default function AiPage() {
 
   return (
     <div className="flex flex-col justify-between min-h-screen bg-gradient-to-b from-teal-100 to-white">
+      <button
+      onClick={() => router.back()}
+      className="fixed top-20 left-4 flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 shadow-md transition-all duration-200 text-gray-700 cursor-pointer"
+    >
+      <ArrowLeft className="w-5 h-5" />
+      <span className="font-medium hidden sm:inline">Back</span>
+    </button>
     {/* Chat container */}
     <div className="w-full max-w-2xl mx-auto flex flex-col space-y-4 flex-1 py-10">
     {/* Jika belum ada chat, tampilkan hero text */}
