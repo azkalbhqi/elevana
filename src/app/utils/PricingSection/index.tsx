@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
+import Link from "next/link";
 
 export default function PricingSection() {
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
@@ -20,7 +21,7 @@ export default function PricingSection() {
   };
 
   return (
-    <section className="py-20 px-6 ">
+    <section className="py-20 px-6 bg-gray-50">
       <div className="max-w-6xl mx-auto text-center">
         <motion.h2
           initial={{ opacity: 0, y: 10 }}
@@ -105,7 +106,7 @@ export default function PricingSection() {
             </button>
           </motion.div>
 
-          {/* Pro (Highlighted) */}
+          {/* Pro */}
           <motion.div
             whileHover={{ y: -4 }}
             transition={{ duration: 0.3 }}
@@ -148,9 +149,12 @@ export default function PricingSection() {
                 <Check className="text-teal-500" size={16} /> Priority support
               </li>
             </ul>
-            <button className="mt-8 py-2.5 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition">
+            <Link
+              href={`/premium?plan=pro&billing=${billing}`}
+              className="mt-8 py-2.5 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition text-center"
+            >
               Upgrade to Pro
-            </button>
+            </Link>
           </motion.div>
 
           {/* Enterprise */}
@@ -191,9 +195,12 @@ export default function PricingSection() {
                 <Check className="text-teal-500" size={16} /> Dedicated manager
               </li>
             </ul>
-            <button className="mt-8 py-2.5 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition">
+            <Link
+              href={`/premium?plan=enterprise&billing=${billing}`}
+              className="mt-8 py-2.5 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition text-center"
+            >
               Upgrade to Premium
-            </button>
+            </Link>
           </motion.div>
         </div>
 

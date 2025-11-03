@@ -62,7 +62,7 @@ const CreateStoryPage: React.FC = () => {
 
       setTimeout(() => {
         setMessage(null);
-        router.push('/stories');
+        router.push('/story');
       }, 1800);
     } catch (error) {
       console.error('Error adding story: ', error);
