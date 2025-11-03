@@ -34,7 +34,7 @@ export default function DoctorsPage() {
           ...doc.data(),
         })) as Doctor[];
         setTimeout(() => {
-          // smooth transition delay
+         
           setDoctors(doctorList);
           setLoading(false);
         }, 600);

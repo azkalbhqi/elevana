@@ -39,6 +39,7 @@ export default function DoctorDetailPage() {
         }
       } catch (error) {
         console.error("Error fetching doctor:", error);
+        alert("Failed to load doctor data.");
       } finally {
         setLoading(false);
       }
