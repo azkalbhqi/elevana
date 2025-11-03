@@ -17,15 +17,6 @@ export default function DoctorsPage() {
     setSortBy,
   } = useDoctors();
 
-  const {
-    filteredDoctors,
-    loading,
-    search, 
-    setSearch,
-    sortBy,
-    setSortBy,
-  } = useDoctors();
-
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white px-6 py-12 mt-10">
